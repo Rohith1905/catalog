@@ -2,27 +2,32 @@ const fs = require('fs');
 
 // Function to decode values from different bases
 function decodeValue(base, value) {
-    return BigInt(parseInt(value, base));  // Use BigInt to handle large numbers
+    return BigInt(parseInt(value, base));  // Use BigInt for large numbers
 }
 
-// Function to calculate Lagrange Interpolation
+// Function to calculate Lagrange Interpolation and find the constant term
 function lagrangeInterpolation(points) {
-    let constantTerm = BigInt(0);  // Initialize as BigInt
+    let constantTerm = BigInt(0);  // Initialize the constant term
 
     for (let i = 0; i < points.length; i++) {
         let xi = BigInt(points[i].x);
         let yi = points[i].y;
-        let li = BigInt(1);
+        let liNum = BigInt(1);  // Numerator for Lagrange basis polynomial
+        let liDen = BigInt(1);  // Denominator for Lagrange basis polynomial
 
         for (let j = 0; j < points.length; j++) {
             if (i !== j) {
                 let xj = BigInt(points[j].x);
-                li *= -xj / (xi - xj);  // Calculating the Lagrange basis polynomial
+                liNum *= -xj;  // Numerator contribution
+                liDen *= (xi - xj);  // Denominator contribution
             }
         }
-        constantTerm += yi * li;
+
+        // To avoid precision errors, use the numerator and denominator separately
+        constantTerm += (yi * liNum) / liDen;  // Add the term for this point
     }
-    return constantTerm;
+
+    return constantTerm;  // The constant term (c) of the polynomial
 }
 
 // Function to extract and decode points from JSON
@@ -39,7 +44,7 @@ function extractPointsFromJSON(data) {
 }
 
 // Reading JSON data from file
-fs.readFile('input.json', 'utf8', (err, jsonString) => {
+fs.readFile('input2.json', 'utf8', (err, jsonString) => {
     if (err) {
         console.error("Error reading file:", err);
         return;
