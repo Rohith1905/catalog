@@ -44,7 +44,7 @@ function extractPointsFromJSON(data) {
 }
 
 // Reading JSON data from file
-fs.readFile('input2.json', 'utf8', (err, jsonString) => {
+fs.readFile('input.json', 'utf8', (err, jsonString) => {
     if (err) {
         console.error("Error reading file:", err);
         return;
